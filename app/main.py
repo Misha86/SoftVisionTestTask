@@ -66,7 +66,6 @@ def read_game(game_id: int, db: Session = Depends(get_db)):
 
 @app.post("/connections", response_model=schemas.Connection)
 def create_connection(connection: schemas.ConnectionCreate, db: Session = Depends(get_db)):
-    print(f"\n\n{connection}\n\n")
     db_connection = crud1.get_connection(db, connection=connection)
     if db_connection:
         raise HTTPException(status_code=400, detail="Connection already created")
@@ -77,11 +76,3 @@ def create_connection(connection: schemas.ConnectionCreate, db: Session = Depend
 def read_connections(db: Session = Depends(get_db)):
     connections = crud1.get_connections(db)
     return connections
-
-#
-# @app.get("/games/{game_id}", response_model=schemas.Game)
-# def read_game(game_id: int, db: Session = Depends(get_db)):
-#     db_user = crud1.get_game(db, game_id=game_id)
-#     if db_user is None:
-#         raise HTTPException(status_code=404, detail="Game not found")
-#     return db_user
