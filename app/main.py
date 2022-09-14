@@ -1,52 +1,87 @@
-import uvicorn
-from fastapi import FastAPI
-from pydantic import (BaseModel, Field, EmailStr)
-from typing import (List, Union)
+from typing import List
+
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.orm import Session
+
+from app import crud1, models, schemas
+from app.database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 
-class Game(BaseModel):
-    name: str
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-class User(BaseModel):
-    name: str = Field(title="The name of the user", max_length=50)
-    age: int = Field(gt=0, le=100, title="User age")
-    email: EmailStr
-    games: Union[List[Game], None] = None
+@app.post("/users/", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud1.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return crud1.create_user(db=db, user=user)
 
 
-@app.get("/games")
-def get_games():
-    return {"Hello": "Games"}
+@app.get("/users/", response_model=List[schemas.User])
+def read_users(db: Session = Depends(get_db)):
+    users = crud1.get_users(db)
+    return users
 
 
-@app.get("/games/{game_id}")
-def get_game(game_id: int):
-    return {"Hello": f"World {game_id}"}
+@app.get("/users/{user_id}", response_model=schemas.User)
+def read_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = crud1.get_user(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
 
-@app.put("/games/{game_id}")
-def update_game(game_id: int, game: Game):
-    return {"Hi": game}
+@app.post("/games", response_model=schemas.Game)
+def create_game(game: schemas.GameCreate, db: Session = Depends(get_db)):
+    db_game = crud1.get_game_by_name(db, game_name=game.name)
+    if db_game:
+        raise HTTPException(status_code=400, detail="Game already created")
+    return crud1.create_game(db=db, game=game)
 
 
-@app.get("/users")
-def get_users():
-    return {"Hello": "users"}
+@app.get("/games", response_model=List[schemas.Game])
+def read_games(db: Session = Depends(get_db)):
+    game = crud1.get_games(db)
+    return game
 
 
-@app.get("/users/{user_id}")
-def get_user(user_id: int):
-    return {"Hello": f"World {user_id}"}
+@app.get("/games/{game_id}", response_model=schemas.Game)
+def read_game(game_id: int, db: Session = Depends(get_db)):
+    db_user = crud1.get_game(db, game_id=game_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="Game not found")
+    return db_user
 
 
-@app.put("/users/{user_id}")
-def update_user(user_id: int, user: User):
-    return {"Hi": user}
+@app.post("/connections", response_model=schemas.Connection)
+def create_connection(connection: schemas.ConnectionCreate, db: Session = Depends(get_db)):
+    print(f"\n\n{connection}\n\n")
+    db_connection = crud1.get_connection(db, connection=connection)
+    if db_connection:
+        raise HTTPException(status_code=400, detail="Connection already created")
+    return crud1.create_connection(db=db, connection=connection)
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+@app.get("/connections", response_model=List[schemas.Connection])
+def read_connections(db: Session = Depends(get_db)):
+    connections = crud1.get_connections(db)
+    return connections
 
+#
+# @app.get("/games/{game_id}", response_model=schemas.Game)
+# def read_game(game_id: int, db: Session = Depends(get_db)):
+#     db_user = crud1.get_game(db, game_id=game_id)
+#     if db_user is None:
+#         raise HTTPException(status_code=404, detail="Game not found")
+#     return db_user

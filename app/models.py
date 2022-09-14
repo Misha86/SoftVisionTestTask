@@ -5,19 +5,16 @@ from .database import Base
 
 
 class Connection(Base):
-    __tablename__ = "connection"
+    __tablename__ = "connections"
 
-    user_id = Column(ForeignKey("user.id"), primary_key=True)
-    game_id = Column(ForeignKey("game.id"), primary_key=True)
+    user_id = Column(ForeignKey("users.id"), primary_key=True)
+    game_id = Column(ForeignKey("games.id"), primary_key=True)
     user = relationship("User", back_populates="games")
     game = relationship("Game", back_populates="users")
 
-    def __repr__(self):
-        return f"Connection: user {self.user} - game {self.game}"
-
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -30,10 +27,10 @@ class User(Base):
 
 
 class Game(Base):
-    __tablename__ = "game"
+    __tablename__ = "games"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, unique=True)
     users = relationship("Connection", back_populates="game")
 
     def __repr__(self):
