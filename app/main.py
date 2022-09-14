@@ -1,21 +1,20 @@
+import uvicorn
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import (BaseModel, Field, EmailStr)
+from typing import (List, Union)
 
 app = FastAPI()
 
 
-class User(BaseModel):
-    id: int
-    name: str
-    age: int
-    email: str
-
-
 class Game(BaseModel):
-    id: int
     name: str
-    users: Optional[int]
+
+
+class User(BaseModel):
+    name: str = Field(title="The name of the user", max_length=50)
+    age: int = Field(gt=0, le=100, title="User age")
+    email: EmailStr
+    games: Union[List[Game], None] = None
 
 
 @app.get("/games")
@@ -31,3 +30,23 @@ def get_game(game_id: int):
 @app.put("/games/{game_id}")
 def update_game(game_id: int, game: Game):
     return {"Hi": game}
+
+
+@app.get("/users")
+def get_users():
+    return {"Hello": "users"}
+
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {"Hello": f"World {user_id}"}
+
+
+@app.put("/users/{user_id}")
+def update_user(user_id: int, user: User):
+    return {"Hi": user}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8000)
+
