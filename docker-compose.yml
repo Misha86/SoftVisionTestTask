@@ -12,8 +12,6 @@ services:
       - .:/app
     depends_on:
       - db
-    networks:
-      - postgres
 
   db:
     image: postgres:13-alpine
@@ -26,13 +24,7 @@ services:
     volumes:
       - .:/docker-entrypoint-initdb.d
       - db-data:/var/lib/postgresql/data
-    networks:
-      - postgres
 
 volumes:
   db-data:
-    driver: local
 
-networks:
-  postgres:
-    driver: bridge
