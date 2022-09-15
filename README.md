@@ -6,7 +6,7 @@
 
 -  Clone this repo to your local machine using   
 ```
-https://github.com/Misha86/SoftVisionTestTask.git
+$ git clone https://github.com/Misha86/SoftVisionTestTask.git
 ```
 ### Required to install
 
@@ -18,15 +18,15 @@ https://docs.docker.com/get-docker/
 
 - For starting the program you should be inside the project root directory
 ```
-cd SoftVisionTestTask
+$ cd SoftVisionTestTask
 ```
 - Start program without logs
 ```
-docker-compose up -d
+$ docker-compose up -d
 ```
 - Start program with logs
 ```
-docker-compose up
+$ docker-compose up
 ```
 - Open browser and input such address
 ```
