@@ -3,7 +3,8 @@ from typing import List
 from fastapi import (HTTPException, Depends, APIRouter)
 from sqlalchemy.orm import Session
 
-from .. import (database, schemas)
+from .. import database
+from ..schemas import games as schemas
 from ..crud import games
 
 

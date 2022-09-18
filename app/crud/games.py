@@ -1,7 +1,7 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from .. import (models, schemas)
+from .. import models
+from ..schemas import games as schemas
 
 
 def get_game(db: Session, game_id: int):

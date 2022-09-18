@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from .. import (models, schemas)
+from .. import models
+from ..schemas import connections as schemas
 
 
 def create_connection(db: Session, connection: schemas.ConnectionCreate):
