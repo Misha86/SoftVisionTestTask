@@ -15,7 +15,7 @@ router = APIRouter(
 get_db = database.get_db
 
 
-@router.post("/", response_model=schemas.User, tags=["users"])
+@router.post("/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = users.get_user_by_email(db, email=user.email)
     if db_user:
@@ -23,13 +23,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return users.create_user(db=db, user=user)
 
 
-@router.get("/", response_model=List[schemas.User], tags=["users"])
+@router.get("/", response_model=List[schemas.User])
 def read_users(db: Session = Depends(get_db)):
     db_users = users.get_users(db)
     return db_users
 
 
-@router.get("/{user_id}", response_model=schemas.User, tags=["users"])
+@router.get("/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = users.get_user(db, user_id=user_id)
     if db_user is None:
