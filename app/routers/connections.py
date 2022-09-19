@@ -3,7 +3,7 @@ from typing import List
 from fastapi import (HTTPException, Depends, APIRouter)
 from sqlalchemy.orm import Session
 
-from .. import database
+from ..dependencies import get_db
 from ..schemas import connections as schemas
 from ..crud import connections
 
@@ -11,10 +11,8 @@ from ..crud import connections
 router = APIRouter(
     prefix="/connections",
     tags=["connections"],
-    responses={404: {"description": "Not found"}},
+    responses={404: {"description": "Not found"}}
 )
-
-get_db = database.get_db
 
 
 @router.post("/connections", response_model=schemas.Connection)

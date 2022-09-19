@@ -20,6 +20,7 @@ class User(Base):
     name = Column(String)
     age = Column(Integer)
     email = Column(String, unique=True)
+    password = Column(String)
     games = relationship("Connection", back_populates="user")
 
     def __repr__(self):

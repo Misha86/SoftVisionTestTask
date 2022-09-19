@@ -3,7 +3,7 @@ from typing import List
 from fastapi import (HTTPException, Depends, APIRouter)
 from sqlalchemy.orm import Session
 
-from .. import database
+from ..dependencies import get_db
 from ..schemas import games as schemas
 from ..crud import games
 
@@ -13,8 +13,6 @@ router = APIRouter(
     tags=["games"],
     responses={404: {"description": "Not found"}},
 )
-
-get_db = database.get_db
 
 
 @router.post("/", response_model=schemas.Game)

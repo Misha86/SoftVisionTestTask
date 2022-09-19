@@ -1,5 +1,5 @@
-from pydantic import (BaseModel, Field, EmailStr)
 from typing import (List, Any)
+
 from pydantic.utils import GetterDict
 
 from .base_schemas import (GameBase, UserBase)
@@ -14,7 +14,10 @@ class UserGameGetter(GetterDict):
 
 
 class UserCreate(UserBase):
-    pass
+    password: str
+
+    class Config:
+        orm_mode = True
 
 
 class UserGameSchema(GameBase):
