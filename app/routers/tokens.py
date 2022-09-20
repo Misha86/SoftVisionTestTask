@@ -10,17 +10,16 @@ from ..crud.tokens import create_access_token, authenticate_user
 from ..dependencies import get_db
 from ..schemas.tokens import Token
 
-
 router = APIRouter(
-    prefix="/token",
-    tags=["token"],
+    prefix="/login",
+    tags=["tokens"],
     responses={404: {"description": "Not found"}},
 )
 
 
 @router.post("/", response_model=Token)
-async def login_for_access_token(db: Session = Depends(get_db),
-                                 form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(db: Session = Depends(get_db),
+                form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(db=db, email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(

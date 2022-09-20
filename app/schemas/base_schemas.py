@@ -12,5 +12,4 @@ class GameBase(BaseModel):
 
 
 class ConnectionBase(BaseModel):
-    user_id: int
     game_id: int
